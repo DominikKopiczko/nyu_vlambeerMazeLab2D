@@ -11,23 +11,40 @@ public class FloorMaker : MonoBehaviour {
 // translate the basic pseudocode here into C#
 
 //	DECLARE CLASS MEMBER VARIABLES:
-//	Declare a private integer called myCounter that starts at 0; 		// count how many floor tiles this FloorMaker has instantiated
-//	Declare a public Transform called floorPrefab, assign the prefab in inspector;
-//	Declare a public Transform called floorMakerPrefab, assign the prefab in inspector; 
+private int myCounter = 0; 		// count how many floor tiles this FloorMaker has instantiated
+public static int globalTileCount = 0;
+public Transform floorPrefab;
+public Transform floorMakerPrefab; 
 
 	void Update () {
-//		If counter is less than 50, then:
-//			Generate a random number from 0.0f to 1.0f;
-//			If random number is less than 0.25f, then rotate myself 90 degrees on Z axis;
-//				... Else if number is 0.25f-0.5f, then rotate myself -90 degrees on Z axis;
-//				... Else if number is 0.99f-1.0f, then instantiate a floorMakerPrefab clone at my current position;
-//			// end elseIf
+		// If counter is less than 50, then:
+		if(myCounter < 50 && globalTileCount < 500){
+			// Generate a random number from 0.0f to 1.0f;
+			float randomNumber = Random.Range(0.0f,1.0f);
 
-//			Instantiate a floorPrefab clone at current position;
-//			Move 1 unit "upwards" based on this object's local rotation (e.g. with rotation 0,0,0 "upwards" is (0,1,0)... but with rotation 0,0,180 then "upwards" is (0,-1, 0)... )
-//			Increment counter;
-//		Else:
-//			Destroy my game object; 		// self destruct if I've made enough tiles already
+			if(randomNumber < 0.25f){
+			// if number is less than 0.25, rotate myself 90 degrees on Z axis
+			transform.Rotate(0,0, 90f);
+			}
+			else if(randomNumber > 0.25f && randomNumber < 0.5f){
+			// if number is between 0.25 - 0.5, rotate myself -90 degrees on Z axis
+			transform.Rotate(0,0,-90f);
+			}
+			else if (randomNumber > 0.95f && randomNumber < 1.0f){
+			// if number is between 0.99 - 1.0, instantiate a floorMakerPrefab clone at my current position
+			Instantiate (floorMakerPrefab, transform.position, Quaternion.Euler (0, 0, 0));
+			}
+			// end else if
+			// instantiate a floorPrefav clone at current position;
+			Instantiate(floorPrefab, transform.position, Quaternion.Euler(0,0,0));
+			// move 1 unit "up" based on this object's local rotation
+			transform.position += transform.up;
+			myCounter ++;
+			globalTileCount ++;
+		}	
+		else {
+			Destroy(this);
+		}
 	}
 
 } // don't delete, end of FloorMaker class
